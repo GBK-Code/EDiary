@@ -1,5 +1,5 @@
 import tkinter as tk
-import json
+import jsonwr
 
 colors = ["#033540", "#015366", "#63898C", "#A7D1D2", "#E0F4F5"]
 
@@ -13,8 +13,7 @@ class App(tk.Tk):
         self.minsize(self.WINSIZE[0], self.WINSIZE[1])
         self.configure(bg=colors[0])
 
-        with open("save.json") as file:
-            self.tasks = json.load(file)
+        self.tasks = jsonwr.read("save.json")
         self.tasks_num = 0
 
         self.title = tk.Label(text="EDiary",
@@ -40,7 +39,7 @@ class App(tk.Tk):
                                    borderwidth=0,
                                    bg=colors[1],
                                    fg=colors[4],
-                                   font=("Arial", 15, "bold"),
+                                   font=("Arial", 12, "bold"),
                                    command=self.reset_app)
         self.reset_btn.place(anchor=tk.NW, relx=0, rely=0)
 
@@ -108,13 +107,13 @@ class App(tk.Tk):
                                    fg=colors[4],
                                    font=("Arial", 10, "bold"),
                                    borderwidth=0,
-                                   command=lambda: (close(), self.create_task(subject_name.get(), parag_entry.get(), nums_entry.get())))
+                                   command=lambda: (close(), self.create_task(subject_name.get(), parag_entry.get(),
+                                                                              nums_entry.get())))
             create_btn.pack(pady=5)
 
     def create_task(self, subject, parags, nums):
         self.tasks[subject] = [parags, nums]
-        with open("save.json", "w") as file:
-            json.dump(self.tasks, file)
+        jsonwr.write(self.tasks, "save.json")
         if self.tasks_num <= 8 and subject != "":
             self.tasks_num += 1
             task_frame = tk.Frame(self.tasks_frame, bg=colors[2])
@@ -167,8 +166,7 @@ class App(tk.Tk):
             t.destroy()
         self.tasks = {}
         self.tasks_num = 0
-        with open("save.json", "w") as save:
-            json.dump(self.tasks, save)
+        jsonwr.write({}, "save.json")
 
 
 if __name__ == "__main__":
